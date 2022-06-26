@@ -1,0 +1,59 @@
+version: "3"
+
+services:
+  ac-php:
+    image: thecodingmachine/php:8.0-v4-fpm
+    container_name: ac-php
+    env_file:
+      - ./.env
+    depends_on:
+      - ac-db
+    volumes:
+      - ./:/var/www/html:rw,cached
+    environment:
+      APP_ENV: "${APP_ENV}"
+      DATABASE_URL: "mysql://${DB_USER}:${DB_PWD}@${DB_HOST}:3306/${DB_NAME}" # exemple plus reel DATABASE_URL: "mysql://test:1234@https://google.com:3306/db-test"
+      PHP_EXTENSIONS: "gd intl xdebug"
+      PHP_MEMORY_LIMIT: "512M"
+    restart: unless-stopped
+
+  ac-db:
+    image: mariadb
+    container_name: ac-db
+    env_file:
+      - ./.env
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_HOST: ${DB_HOST}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PWD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PWD}
+    volumes:
+      - ac_db:/var/lib/mysql:rw,cached
+    restart: unless-stopped
+
+  ac-caddy:
+    image: caddy:v2
+    container_name: ac-caddy
+    env_file:
+      - ./.env
+    ports:
+      - target: 80
+        published: 80
+        protocol: tcp
+      - target: 443
+        published: 443
+        protocol: tcp
+      - target: 443
+        published: 443
+        protocol: udp
+    volumes:
+      - ./:/var/www/html:ro
+      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data: /data
+      - caddy_config: /config
+
+volumes:
+  ac_db:
+  caddy_data:
+  caddy_config:
