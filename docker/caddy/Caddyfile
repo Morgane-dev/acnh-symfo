@@ -1,0 +1,20 @@
+{
+    debug
+
+    servers {
+        protocol {
+            experimental_http3
+        }
+    }
+}
+
+localhost
+
+log
+
+root * /var/www/html/public
+
+php_fastcgi ac-php:9000
+
+encode gzip zstd
+file_server
