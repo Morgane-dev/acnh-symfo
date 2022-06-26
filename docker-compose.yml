@@ -33,7 +33,7 @@ services:
     restart: unless-stopped
 
   ac-caddy:
-    image: caddy:v2
+    image: caddy:2
     container_name: ac-caddy
     env_file:
       - ./.env
@@ -50,8 +50,8 @@ services:
     volumes:
       - ./:/var/www/html:ro
       - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy_data: /data
-      - caddy_config: /config
+      - caddy_data:/data
+      - caddy_config:/config
 
 volumes:
   ac_db:
