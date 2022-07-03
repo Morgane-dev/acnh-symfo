@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Page de connexion{% endblock %}
+
+{% block body %}
+    <form method="post">
+        <input type="text" name="email" placeholder="Email" />
+        <input type="password" name="password" placeholder="Mot de passe" />
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
+        <button type="submit">Se connecter</button>
+    </form>
+{% endblock %}
